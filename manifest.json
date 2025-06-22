@@ -1,9 +1,20 @@
 {
-    "name": "Kelas Hukum Online",
-    "short_name": "WebApp",
-    "description": "A simple web application to display my first app",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#ffffff",
-    "theme_color": "#000000"
+  "name": "Kelas Hukum Online",
+  "short_name": "HukumOnline",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0033cc",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
