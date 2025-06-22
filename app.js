@@ -1,33 +1,23 @@
-const rssURL = 'https://kelashukumonline.blogspot.com/feeds/posts/default?alt=rss';
-const proxyURL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(rssURL);
+const apiURL = "https://api.rss2json.com/v1/api.json?rss_url=https://kelashukumonline.blogspot.com/feeds/posts/default";
 
-fetch(proxyURL)
-    .then(response => {
-        if (!response.ok) throw new Error('Gagal mengambil data RSS');
-        return response.text();
-    })
-    .then(str => {
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(str, "text/xml");
-        const items = xmlDoc.getElementsByTagName('item');
+fetch(apiURL)
+  .then(response => response.json())
+  .then(data => {
+    if (data.status !== "ok") throw new Error("Gagal memuat RSS: " + data.message);
 
-        let output = "";
-        for (let i = 0; i < Math.min(5, items.length); i++) {
-            const title = items[i].getElementsByTagName('title')[0].textContent;
-            const link = items[i].getElementsByTagName('link')[0].textContent;
-            const pubDate = items[i].getElementsByTagName('pubDate')[0].textContent;
-
-            output += `
-                <div class="post">
-                    <h2><a href="${link}" target="_blank">${title}</a></h2>
-                    <small>Dipublikasikan: ${new Date(pubDate).toLocaleDateString("id-ID")}</small>
-                </div>
-            `;
-        }
-
-        document.getElementById("content").innerHTML = output;
-    })
-    .catch(error => {
-        console.error('Error fetching RSS:', error);
-        document.getElementById("content").innerHTML = "<p>Gagal memuat artikel. Silakan coba lagi nanti.</p>";
+    let output = "";
+    data.items.slice(0, 5).forEach(item => {
+      output += `
+        <div class="post">
+          <h2><a href="${item.link}" target="_blank">${item.title}</a></h2>
+          <small>Diterbitkan: ${new Date(item.pubDate).toLocaleDateString("id-ID")}</small>
+        </div>
+      `;
     });
+
+    document.getElementById("content").innerHTML = output;
+  })
+  .catch(error => {
+    console.error("RSS ERROR:", error);
+    document.getElementById("content").innerHTML = `<p><strong>ERROR:</strong> ${error.message}</p>`;
+  });
